@@ -1,5 +1,6 @@
 require('chromedriver')
 const { Builder, By, Key } = require('selenium-webdriver');
+const fs = require('fs');
 
 const frontPageLogo = 'div.logofix > div.logofront';
 const searchIcon = '#menu-apunavi-1 > li.astm-search-menu.astm-search-menu.is-menu.is-dropdown.menu-item > a';
@@ -42,13 +43,24 @@ const programInfo = '#content > div:nth-child(7) > div > div > a';
         const programInfoFound = await driver.findElements(By.css(programInfo));
         console.log('Found program info box: ' + Boolean(programInfoFound.length));
 
-        programInfoFound[0].takeScreenshot(true).then(
+        /* programInfoFound[0].takeScreenshot(true).then(
             function(image, err) {
                 require('fs').writeFile('out.png', image, 'base64', function(err) {
                     console.log(err);
                 });
             }
-        );
+        ); */
+        
+        const now = new Date();
+        const screenShot = await programInfoFound[0].takeScreenshot(true);
+        fs.writeFile('screenshot-' 
+            + now.getMilliseconds() 
+            + '.png', 
+            screenShot, 
+            'base64', 
+            err => {
+                console.log(err);
+            });
     }
 
     catch (e) {
